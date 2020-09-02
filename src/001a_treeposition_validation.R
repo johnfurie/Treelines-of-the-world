@@ -59,9 +59,12 @@ val <- BestSegVal(chm = chm,
                   filter = 1
                   )
 
-
 #stop cluster
 
 stopCluster(cl)
 
-# look at val table to find best input iterations
+# write table
+write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy.csv"))
+
+# view table
+tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy.csv"))
