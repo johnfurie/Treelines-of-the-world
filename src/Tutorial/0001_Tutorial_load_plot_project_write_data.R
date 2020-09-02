@@ -11,7 +11,7 @@ libs = c("link2GI","sf","mapview","rgdal")
 pathdir = "repo/src/"
 
 #set root folder for uniPC or laptop                                                        
-root_folder = alternativeEnvi(root_folder = "E:/Treelines-of-the-world",                    
+root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",                    
                               alt_env_id = "COMPUTERNAME",                                  
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           

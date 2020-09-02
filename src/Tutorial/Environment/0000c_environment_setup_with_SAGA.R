@@ -33,7 +33,7 @@ project_folders = c("data/",
 
 # Automatically set root direcory, folder structure and load libraries
 cat("#--- set up Environment  ---#",sep = "\n")
-envrmt = createEnvi(root_folder = "E:/Treelines-of-the-world", 
+envrmt = createEnvi(root_folder = "E:/Github/Treelines-of-the-world", 
                     folders = project_folders, 
                     path_prefix = "path_", libs = libs,
                     alt_env_id = "COMPUTERNAME", alt_env_value = "PCRZP",
