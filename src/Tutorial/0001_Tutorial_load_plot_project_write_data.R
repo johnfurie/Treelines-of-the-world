@@ -45,7 +45,8 @@ mapview::viewRGB(rgb)+tree
 crs(tree)
 seg_proj <- spTransform(tree, CRSobj = proj4)
 
-
+# view table
+tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy.csv"))
 
 # WRITE-DATA
 
@@ -53,3 +54,5 @@ seg_proj <- spTransform(tree, CRSobj = proj4)
 writeRaster(chm, file.path(envrmt$path_002_processed,"chm_tree_proj.tif"),format="GTiff",overwrite=TRUE)
 # VECTOR
 writeOGR(tree, file.path(envrmt$path_002_processed, "tree_proj.shp"),layer="testShape",driver="ESRI Shapefile")
+# write table
+write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy.csv"))
