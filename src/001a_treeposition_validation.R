@@ -47,9 +47,9 @@ registerDoParallel(cl)
 
 # CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
 val <- BestSegVal(chm = chm_tree_shrub, 
-                  a = seq(0.1,0.9,0.05), 
-                  b = seq(0.1,0.9,0.05),
-                  h = seq(0.5,5,0.5),
+                  a = seq(0.1,0.9,0.1), 
+                  b = seq(0.1,0.9,0.1),
+                  h = seq(0.25,5,0.25),
                   vp = vp_tree_shrub,
                   MIN = 10,
                   MAX = 50000,
