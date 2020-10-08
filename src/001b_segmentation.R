@@ -52,14 +52,14 @@ val <- BestSegVal(chm=chm,
 )
 
 # CENITH segmentation
-seg <- TreeSeg(chm=chm, 
-               a=c(0.1), 
+seg <- TreeSeg(chm=chm_tree_shrub, 
+               a=c(0.2), 
                b=c(0.7),
-               h=c(4),
-               MIN=0,
-               MAX=1000,
-               CHMfilter=1
+               h=c(0.5),
+               MIN=10,
+               MAX=50000,
+               CHMfilter=3
 )
 
 # visualization
-mapview::mapview(seg)+vp
+mapview::mapview(seg)+vp_tree_shrub+chm_tree_shrub
