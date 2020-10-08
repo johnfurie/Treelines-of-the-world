@@ -22,22 +22,19 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 #############################################################################################
 #############################################################################################
 
-# source Cenith validation v2.1
-source(file.path(root_folder, paste0(pathdir,"CENITH_validation_V2.1/002_cenith_val_v2_1.R")))
-source(file.path(root_folder, paste0(pathdir,"CENITH_validation_V2.1/sf_cenith_val_a_v2.R")))
-source(file.path(root_folder, paste0(pathdir,"CENITH_validation_V2.1/sf_cenith_val_b_v2.R")))
-
-#source CENITH V2
-source(file.path(root_folder, paste0(pathdir,"CENITH_seg_V2/000_cenith_v2.R")))
-source(file.path(root_folder, paste0(pathdir,"CENITH_seg_V2/sf_cenith_tiles.R")))
-source(file.path(root_folder, paste0(pathdir,"CENITH_seg_V2/sf_cenith_tp_v2.R")))
-source(file.path(root_folder, paste0(pathdir,"CENITH_seg_V2/sf_cenith_seg_tiles.R")))
-source(file.path(root_folder, paste0(pathdir,"CENITH_seg_V2/sf_cenith_merge.R")))
-source(file.path(root_folder, paste0(pathdir,"CENITH_seg_V2/sf_cenith_seg_v1.R"))) 
+require(CENITH) 
 
 # load data
-chm <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif"))   
-vp <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree_shrub.shp"))
+chm_tree_shrub  <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif")) 
+chm_tree        <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree.tif"))
+chm_shrub       <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_shrub.tif"))
+chm_shrub_2     <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_shrub_2.tif"))
+
+vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree_shrub.shp"))
+vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree.shp"))
+vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
+vp_shrub_2      <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub_2.shp"))
+
 
 # compare coordinate system of datasets
 compareCRS(chm,vp)
@@ -49,13 +46,13 @@ registerDoParallel(cl)
 
 
 # CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
-val <- BestSegVal(chm = chm, 
+val <- BestSegVal(chm = chm_tree_shrub, 
                   a = seq(0.1,0.9,0.05), 
                   b = seq(0.1,0.9,0.05),
                   h = seq(0.5,5,0.5),
-                  vp = vp,
-                  MIN = 0,
-                  MAX = 1000,
+                  vp = vp_tree_shrub,
+                  MIN = 10,
+                  MAX = 50000,
                   filter = 1
                   )
 
