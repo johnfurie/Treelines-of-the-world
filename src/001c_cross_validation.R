@@ -54,10 +54,10 @@ vps  <- list(vp_shrub,vp_shrub_2,vp_tree,vp_tree_shrub)
 val <- TreeSegCV( sites  = chms, 
                   a      = 0.1, 
                   b      = 0.1,
-                  h      = 4.5,
+                  h      = 0.25,
                   vps    = vps,
                   MIN    = 10,
-                  MAX    = 5000,
+                  MAX    = 50000,
                   CHMfilter = 1
                   )
 
