@@ -46,13 +46,13 @@ registerDoParallel(cl)
 
 
 # CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
-val <- BestSegVal(chm = chm_tree_shrub, 
+val <- BestSegVal(chm = chm_shrub, 
                   a = seq(0.1,0.9,0.1), 
                   b = seq(0.1,0.9,0.1),
-                  h = seq(0.25,5,0.25),
-                  vp = vp_tree_shrub,
+                  h = seq(0.1,2,0.1),
+                  vp = vp_shrub,
                   MIN = 10,
-                  MAX = 50000,
+                  MAX = 500000,
                   filter = 1
                   )
 
@@ -64,4 +64,4 @@ stopCluster(cl)
 write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy_tree_scrub.csv"))
 
 # view table
-tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy.csv"))
+tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy_shrub.csv"))
