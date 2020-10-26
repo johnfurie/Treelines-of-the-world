@@ -22,7 +22,9 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 #############################################################################################
 #############################################################################################
 
-require(CENITH) 
+require(uavRst) 
+require(mapview)
+require(maptools)
 
 # load data
 chm_tree_shrub  <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif")) 
@@ -44,23 +46,18 @@ compareCRS(chm,vp)
 cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
+# rliadar
+  rl <- chmseg_RL(chm = chm_tree,
+                      treepos = vp_tree ,
+                      maxCrownArea = 150,
+                      exclusion = 0.2)
 
-# CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
-val <- BestSegVal(chm = chm_shrub_2, 
-                  a = seq(0.1,0.9,0.1), 
-                  b = seq(0.1,0.9,0.1),
-                  h = seq(0.1,2,0.1),
-                  vp = vp_shrub_2,
-                  MIN = 10,
-                  MAX = 500000,
-                  filter = 1
-                  )
+#view note that mapview has problems
+mapview(rl)+vp_tree +chm_tree 
+mapview(chm_tree)+vp_tree 
+mapview(chm_tree_shrub)+vp_tree_shrub
 
-#stop cluster
-stopCluster(cl)
+# plot with maptools
+plot(chm_tree)
+plot(vp_tree, add = TRUE)
 
-# write table
-write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy_scrub_2.csv"))
-
-# view table
-tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy_shrub_2.csv"))

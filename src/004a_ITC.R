@@ -23,6 +23,7 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 #############################################################################################
 
 require(CENITH) 
+require(mapview)
 
 # load data
 chm_tree_shrub  <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif")) 
@@ -44,23 +45,20 @@ compareCRS(chm,vp)
 cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
+# ITC
+itc <- chmseg_ITC(
+  chm = chm_tree,
+  EPSG = 31254,
+  movingWin = 7,
+  TRESHSeed = 0.45,
+  TRESHCrown = 0.55,
+  minTreeAlt = 2,
+  maxCrownArea = 10000)
 
-# CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
-val <- BestSegVal(chm = chm_shrub_2, 
-                  a = seq(0.1,0.9,0.1), 
-                  b = seq(0.1,0.9,0.1),
-                  h = seq(0.1,2,0.1),
-                  vp = vp_shrub_2,
-                  MIN = 10,
-                  MAX = 500000,
-                  filter = 1
-                  )
+#view
+mapview(itc)+vp_tree +chm_tree
 
-#stop cluster
-stopCluster(cl)
-
-# write table
-write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy_scrub_2.csv"))
-
-# view table
-tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy_shrub_2.csv"))
+# plot with maptoo
+plot(chm_tree)
+plot(vp_tree, add = TRUE)
+plot(itc, add = TRUE)

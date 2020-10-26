@@ -26,6 +26,7 @@ project_folders = c("data/",
                     "data/001_org/03_Segmentation_sites/RGB/",
                     "data/001_org/03_Segmentation_sites/shp/",
                     "data/001_org/03_Segmentation_sites/Hillshade/",
+                    "data/001_org/03_Segmentation_sites/las/",
                     "data/002_processed/",
                     "tmp/", # tmp folder for saga data
                     "repo/src/"   #for scripts

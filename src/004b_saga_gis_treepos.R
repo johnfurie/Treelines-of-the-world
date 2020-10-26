@@ -22,8 +22,6 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 #############################################################################################
 #############################################################################################
 
-require(CENITH) 
-
 # load data
 chm_tree_shrub  <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif")) 
 chm_tree        <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree.tif"))
@@ -35,32 +33,32 @@ vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_s
 vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
 vp_shrub_2      <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub_2.shp"))
 
+# required packages
+require(uavRst)
+require(link2GI)
 
-# compare coordinate system of datasets
-compareCRS(chm,vp)
-
-#run cluster
-
-cl =  makeCluster(detectCores()-1)
-registerDoParallel(cl)
-
-
-# CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
-val <- BestSegVal(chm = chm_shrub_2, 
-                  a = seq(0.1,0.9,0.1), 
-                  b = seq(0.1,0.9,0.1),
-                  h = seq(0.1,2,0.1),
-                  vp = vp_shrub_2,
-                  MIN = 10,
-                  MAX = 500000,
-                  filter = 1
-                  )
-
-#stop cluster
-stopCluster(cl)
-
-# write table
-write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy_scrub_2.csv"))
-
-# view table
-tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy_shrub_2.csv"))
+# create and check the links to the GI software
+giLinks<-uavRst::linkGI()
+if (giLinks$saga$exist & giLinks$otb$exist & giLinks$grass$exist) {
+  
+  # project folder
+  projRootDir<-tempdir()
+  
+  # create subfolders please mind that the pathes are exported as global variables
+  paths<-link2GI::initProj(projRootDir = projRootDir,
+                           projFolders = c("data/","data/ref/","output/","run/","las/"),
+                           global = TRUE,
+                           path_prefix = "path_")
+  
+  data(chm_seg)
+  
+  # calculate treepos using uavRst generic approach
+  tPos <- uavRst::treepos_GWS(chm = chm_tree,
+                              minTreeAlt = 2,
+                              maxCrownArea = 150,
+                              join = 1,
+                              thresh = 0.35,
+                              split=TRUE,
+                              cores=1,
+                              giLinks = giLinks )
+}

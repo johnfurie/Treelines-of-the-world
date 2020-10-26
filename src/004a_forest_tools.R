@@ -37,7 +37,7 @@ vp_shrub_2      <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_s
 
 
 # compare coordinate system of datasets
-compareCRS(chm,vp)
+compareCRS(chm_tree,vp_tree)
 
 #run cluster
 
@@ -45,22 +45,26 @@ cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
 
-# CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
-val <- BestSegVal(chm = chm_shrub_2, 
-                  a = seq(0.1,0.9,0.1), 
-                  b = seq(0.1,0.9,0.1),
-                  h = seq(0.1,2,0.1),
-                  vp = vp_shrub_2,
-                  MIN = 10,
-                  MAX = 500000,
-                  filter = 1
-                  )
+# load uavrst and dependencies
+require(uavRst)
+require(link2GI)
+require(mapview)
 
-#stop cluster
-stopCluster(cl)
+#forest tools segmentation
+ft <- chmseg_FT(
+  treepos = vp_tree,
+  chm = chm_tree,
+  minTreeAlt = 2,
+  format = "polygons",
+  winRadius = 1.5,
+  verbose = FALSE)
+  
 
-# write table
-write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy_scrub_2.csv"))
+#view
+mapview(ft)+vp_tree +chm_tree 
+mapview(chm_tree)+vp_tree 
 
-# view table
-tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy_shrub_2.csv"))
+# plot with maptoo
+plot(chm_tree)
+plot(vp_tree, add = TRUE)
+plot(ft, add = TRUE)
