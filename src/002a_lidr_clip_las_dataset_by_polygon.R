@@ -22,29 +22,23 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 #############################################################################################
 #############################################################################################
 
- 
-
-# load data
-chm_tree_shrub  <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif")) 
-chm_tree        <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree.tif"))
-chm_shrub       <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_shrub.tif"))
-chm_shrub_2     <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_shrub_2.tif"))
-
-vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree_shrub_t.shp"))
-vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree.shp"))
-vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
-vp_shrub_2      <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub_2.shp"))
-
-
 library(lidR)
 
 LASfile <- "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/11225103_HH.las"
-
+readLAS(LASfile)
 ctg = catalog(LASfile)
 
 tree <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tree.shp"))
+shrub <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub.shp"))
+tree_shrub <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tree_shrub.shp"))
+shrub_2 <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub_2.shp"))
 
 i = 1
-p = tree@polygons[[1]]@Polygons[[i]]
+p = tree_shrub@polygons[[1]]@Polygons[[i]]
 
-poly1 = lasclip(ctg, p)
+tr = lasclip(ctg, p)
+
+
+writeLAS(tr, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/tree_shrub.las")
+
+plot(tr)

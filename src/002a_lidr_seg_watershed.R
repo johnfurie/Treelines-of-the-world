@@ -28,8 +28,18 @@ require(rLiDAR)
 require(rgeos)
 
 # read lidar data
-LASfile <- "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/11225103_HH.las"
-las = lidR::readLAS(LASfile)
+LASfile <- file.path(envrmt$path_las, "11225103_HH.las")
+
+tree <- file.path(envrmt$path_las, "tree.las")
+tree_shrub <- file.path(envrmt$path_las, "tree_shrub.las")
+shrub <- file.path(envrmt$path_las, "shrub.las")
+shrub_2 <- file.path(envrmt$path_las, "shrub_2.las")
+
+
+las = lidR::readLAS(tree)
+las = lidR::readLAS(shrub)
+las = lidR::readLAS(tree_shrub)
+las = lidR::readLAS(shrub_2)
 
 # watershed
 col <- pastel.colors(250)
