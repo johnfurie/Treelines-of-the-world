@@ -23,9 +23,6 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 
 # load packages                                
 require(lidR)
-require(rlas)
-require(rLiDAR)
-require(rgeos)
 
 # read lidar data
 LASfile <- file.path(envrmt$path_las, "11225103_HH.las")
