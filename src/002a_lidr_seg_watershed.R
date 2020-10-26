@@ -29,33 +29,18 @@ require(rgeos)
 
 # read lidar data
 LASfile <- "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/11225103_HH.las"
-
 las = lidR::readLAS(LASfile)
 
+# watershed
+col <- pastel.colors(250)
 
-shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub.shp"))
+chm <- grid_canopy(las, res = 0.5, p2r(0.3))
+ker <- matrix(1,3,3)
+chm <- raster::focal(chm, w = ker, fun = mean, na.rm = TRUE)
+las <- segment_trees(las, watershed(chm))
 
-crs <- "+proj=tmerc +lat_0=0 +lon_0=10.3333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel
-+towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232 +units=m +no_defs" 
-gc()
+plot(las, color = "treeID", colorPalette = col)
 
-crs(shrub)
-crs(las)
-shrub_las <- lasclip(las, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/shp/shrub.shp")
-lascheck(las)
-lasclipRectangle(las, xleft = -41963, ybottom = 216372, xright = -41913, ytop = 216422)
+#watershed(chm, th_tree = 2, tol = 1, ext = 1)
 
-shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub.shp"))
-epsg(las)
-wkt(las)
-
-sp::wkt(crs(las))
-crs <- sp::CRS("+init=epsg:31245")
-projection(shrub) <- crs
-sf::st_crs(las)$input
-
-projection(las) <- 31254
-a <- spTransform()
-
-epsg(object) <- 
-proj4 <- "+proj=tmerc +lat_0=0 +lon_0=10.33333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232 +units=m +no_defs" 
+#mcwatershed(chm, treetops, th_tree = 2, ID = "treeID")
