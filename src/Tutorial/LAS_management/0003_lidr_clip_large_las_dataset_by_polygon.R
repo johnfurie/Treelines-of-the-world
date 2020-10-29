@@ -24,21 +24,73 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 
 library(lidR)
 
+# read large las file via catalog
 LASfile <- "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/11225103_HH.las"
-readLAS(LASfile)
+#readLAS(LASfile)
 ctg = catalog(LASfile)
 
+# load bbox shapefiles for segmentation sites
 tree <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tree.shp"))
 shrub <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub.shp"))
 tree_shrub <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tree_shrub.shp"))
 shrub_2 <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub_2.shp"))
 
+
+
+# clip las file to polygon extent
+
+# tree shrub
 i = 1
-p = tree_shrub@polygons[[1]]@Polygons[[i]]
+ts = tree_shrub@polygons[[1]]@Polygons[[i]]
 
-tr = lasclip(ctg, p)
+pts = lasclip(ctg, ts)
+
+# write las file
+writeLAS(pts, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/tree_shrub.las")
+
+# plot las file
+plot(pts)
 
 
-writeLAS(tr, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/tree_shrub.las")
 
-plot(tr)
+# tree
+i = 1
+t = tree@polygons[[1]]@Polygons[[i]]
+
+pt = lasclip(ctg, t)
+
+# write las file
+writeLAS(pt, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/tree.las")
+
+# plot las file
+plot(pt)
+
+
+
+# shrub
+i = 1
+s = shrub@polygons[[1]]@Polygons[[i]]
+
+ps = lasclip(ctg, s)
+
+# write las file
+writeLAS(ps, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/shrub.las")
+
+# plot las file
+plot(ps)
+
+
+
+# shrub 2
+i = 1
+s2 = shrub_2@polygons[[1]]@Polygons[[i]]
+
+ps2 = lasclip(ctg, s2)
+
+# write las file
+writeLAS(ps2, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/shrub_2.las")
+
+# plot las file
+plot(ps2)
+plot(shrub_2, add = T)
+
