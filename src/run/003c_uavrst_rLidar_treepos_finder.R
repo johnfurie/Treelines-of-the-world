@@ -22,11 +22,8 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 #############################################################################################
 #############################################################################################
 
-# load uavrst and dependencies
-require(uavRst)
-require(link2GI)
+require(uavRst) 
 require(mapview)
-require(rgdal)
 require(maptools)
 
 # load data
@@ -46,41 +43,20 @@ vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_s
 vp_shrub_2      <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub_2.shp"))
 
 
-#forest tools treetop finder 
 
-# 1 tree shrub
-ft_ts <- treepos_FT(chm = chm_tree_shrub,
-                     minTreeAlt = 1,
-                     maxCrownArea = 5000)
+# rLidar treeposition finder
 
-#convert treetop raster to point shape
-pts = rasterToPoints(ft_ts$treeID,spatial = TRUE)
-
-#Write/read as shapefile
-writeOGR(pts, file.path(envrmt$path_002_processed, "ft_tpos_ts.shp"),layer="testShape",driver="ESRI Shapefile")
-pts<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "ft_tpos_ts.shp"))
-
-# plot with maptools
-plot(chm_tree_shrub)
-plot(vp_tree_shrub, add = T)
-plot(pts, las=1, bty="l", col="red", pch=19, add = T)
-
-plotRGB(rgb_tree_shrub)
-plot(vp_tree_shrub, add = T)
-plot(pts, las=1, bty="l", col="red", pch=19, add = T)
-
-
-# 2 tree
-ft_t <- treepos_FT(chm = chm_tree,
-                    minTreeAlt = 2,
-                    maxCrownArea = 5000)
+# tree
+rl_t <- treepos_RL(chm = chm_tree,
+                     movingWin = 7,
+                     minTreeAlt = 10)
 
 #convert treetop raster to point shape
-pt = rasterToPoints(ft_t$treeID,spatial = TRUE)
+pt = rasterToPoints(rl_t ,spatial = TRUE)
 
 #Write shape
-writeOGR(pt, file.path(envrmt$path_002_processed, "ft_tpos_t.shp"),layer="testShape",driver="ESRI Shapefile")
-pt<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "ft_tpos_t.shp"))
+writeOGR(pt, file.path(envrmt$path_002_processed, "rl_tpos_t.shp"),layer="testShape",driver="ESRI Shapefile")
+pt<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "rl_tpos_t.shp"))
 
 # plot with maptools
 plot(chm_tree)
@@ -93,18 +69,18 @@ plot(pt, las=1, bty="l", col="red", pch=19, add = T)
 
 
 
-# 3 shrub
+# 2 shrub
 #forest tools treetop finder 
-ft_s <- treepos_FT(chm = chm_shrub,
-                   minTreeAlt = 0.6,
-                   maxCrownArea = 5000)
+rl_s <- treepos_RL(chm = chm_shrub,
+                   movingWin = 7,
+                   minTreeAlt = 1)
 
 #convert treetop raster to point shape
-ps = rasterToPoints(ft_s$treeID,spatial = TRUE)
+ps = rasterToPoints(rl_s,spatial = TRUE)
 
 #Write shape
-writeOGR(ps, file.path(envrmt$path_002_processed, "ft_tpos_s.shp"),layer="testShape",driver="ESRI Shapefile")
-ps<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "ft_tpos_s.shp"))
+writeOGR(ps, file.path(envrmt$path_002_processed, "rl_tpos_s.shp"),layer="testShape",driver="ESRI Shapefile")
+ps<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "rl_tpos_s.shp"))
 
 # plot with maptools
 plot(chm_shrub)
@@ -117,18 +93,43 @@ plot(ps, las=1, bty="l", col="red", pch=19, add = T)
 
 
 
-# 4 shrub 2
-#forest tools treetop finder 
-ft_s2 <- treepos_FT(chm = chm_shrub_2,
-                   minTreeAlt = 1,
-                   maxCrownArea = 5000)
+
+# 3 tree shrub
+rl_ts <- treepos_RL(chm = chm_tree_shrub,
+                   movingWin = 7,
+                   minTreeAlt = 10)
 
 #convert treetop raster to point shape
-ps2 = rasterToPoints(ft_s2$treeID,spatial = TRUE)
+pts = rasterToPoints(rl_ts,spatial = TRUE)
+
+#Write/read as shapefile
+writeOGR(pts, file.path(envrmt$path_002_processed, "rl_tpos_ts.shp"),layer="testShape",driver="ESRI Shapefile")
+pts<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "rl_tpos_ts.shp"))
+
+# plot with maptools
+plot(chm_tree_shrub)
+plot(vp_tree_shrub, add = T)
+plot(pts, las=1, bty="l", col="red", pch=19, add = T)
+
+plotRGB(rgb_tree_shrub)
+plot(vp_tree_shrub, add = T)
+plot(pts, las=1, bty="l", col="red", pch=19, add = T)
+
+
+
+
+# 4 shrub 2
+#forest tools treetop finder 
+rl_s2 <- treepos_RL(chm = chm_shrub_2,
+                   movingWin = 7,
+                   minTreeAlt = 0.4)
+
+#convert treetop raster to point shape
+ps2 = rasterToPoints(rl_s2,spatial = TRUE)
 
 #Write point shape
-writeOGR(ps2, file.path(envrmt$path_002_processed, "ft_tpos_s2.shp"),layer="testShape",driver="ESRI Shapefile")
-ps2<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "ft_tpos_s2.shp"))
+writeOGR(ps2, file.path(envrmt$path_002_processed, "rl_tpos_s2.shp"),layer="testShape",driver="ESRI Shapefile")
+ps2<-  rgdal::readOGR(file.path(envrmt$path_002_processed, "rl_tpos_s2.shp"))
 
 # plot with maptools
 plot(chm_shrub_2)
