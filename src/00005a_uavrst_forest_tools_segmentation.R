@@ -6,7 +6,7 @@ require(envimaR)
 require(link2GI)                             
 
 # define needed libs                                                          
-libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel") 
+libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel", "uavRst") 
 
 # define src folder
 pathdir = "repo/src/"
@@ -30,12 +30,12 @@ chm_tree        <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CH
 chm_shrub       <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_shrub.tif"))
 
 
-vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree_shrub_t.shp"))
-vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree.shp"))
-vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
+vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_ts.shp"))
+vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_t.shp"))
+vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_s.shp"))
 
-
-
+plot(vp_tree)
+head(vp_tree)
 # compare coordinate system of datasets
 compareCRS(chm_tree,vp_tree)
 
@@ -45,16 +45,12 @@ cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
 
-# load uavrst and dependencies
-require(uavRst)
-require(link2GI)
-require(mapview)
 
 #forest tools segmentation
 ft <- chmseg_FT(
   treepos = vp_tree,
   chm = chm_tree,
-  minTreeAlt = 2,
+  minTreeAlt = 1,
   format = "polygons",
   winRadius = 1.5,
   verbose = FALSE)

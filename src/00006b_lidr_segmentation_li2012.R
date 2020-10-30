@@ -31,7 +31,9 @@ tree <- file.path(envrmt$path_las, "tree.las")
 tree_shrub <- file.path(envrmt$path_las, "tree_shrub.las")
 shrub <- file.path(envrmt$path_las, "shrub.las")
 
-
+vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_ts.shp"))
+vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_t.shp"))
+vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_s.shp"))
 
 las = lidR::readLAS(tree)
 las = lidR::readLAS(shrub)
