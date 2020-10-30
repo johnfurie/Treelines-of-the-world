@@ -16,7 +16,7 @@ root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           
 #source environment script                                                                  
-source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.R")))    
+source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R")))    
 
 #############################################################################################
 #############################################################################################
@@ -24,31 +24,23 @@ source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.
 # load packages                                
 require(lidR)
 
-
 # read lidar data
 LASfile <- file.path(envrmt$path_las, "11225103_HH.las")
 
 tree <- file.path(envrmt$path_las, "tree.las")
 tree_shrub <- file.path(envrmt$path_las, "tree_shrub.las")
 shrub <- file.path(envrmt$path_las, "shrub.las")
-shrub_2 <- file.path(envrmt$path_las, "shrub_2.las")
+
 
 
 las = lidR::readLAS(tree)
 las = lidR::readLAS(shrub)
 las = lidR::readLAS(tree_shrub)
-las = lidR::readLAS(shrub_2)
 
-# watershed
-col <- pastel.colors(250)
 
-chm <- grid_canopy(las, res = 0.5, p2r(0.3))
-ker <- matrix(1,3,3)
-chm <- raster::focal(chm, w = ker, fun = mean, na.rm = TRUE)
-las <- segment_trees(las, watershed(chm))
+# Using Li et al. (2012)
+las <- segment_trees(las, li2012(R = 3, speed_up = 5))
+plot(las, color = "treeID")
 
-plot(las, color = "treeID", colorPalette = col)
-
-#watershed(chm, th_tree = 2, tol = 1, ext = 1)
-
-#mcwatershed(chm, treetops, th_tree = 2, ID = "treeID")
+#li2012(
+      dt1 = 1.5, dt2 = 2, R = 2, Zu = 15, hmin = 2, speed_up = 10)

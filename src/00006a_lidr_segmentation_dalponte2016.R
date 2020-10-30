@@ -16,9 +16,46 @@ root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           
 #source environment script                                                                  
-source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.R")))    
+source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R")))    
 
 #############################################################################################
 #############################################################################################
-                                
-                      
+
+# load packages                                
+require(lidR)
+
+# read lidar data
+LASfile <- file.path(envrmt$path_las, "11225103_HH.las")
+
+tree <- file.path(envrmt$path_las, "tree.las")
+tree_shrub <- file.path(envrmt$path_las, "tree_shrub.las")
+shrub <- file.path(envrmt$path_las, "shrub.las")
+
+
+
+las = lidR::readLAS(tree)
+las = lidR::readLAS(shrub)
+las = lidR::readLAS(tree_shrub)
+
+
+col <- pastel.colors(200)
+
+# dalponte 2016
+chm <- grid_canopy(las, 0.5, p2r(0.3))
+ker <- matrix(1,3,3)
+chm <- raster::focal(chm, w = ker, fun = mean, na.rm = TRUE)
+
+ttops <- find_trees(chm, lmf(4, 2))
+las   <- segment_trees(las, dalponte2016(chm, ttops))
+plot(las, color = "treeID", colorPalette = col)
+
+
+#dalponte2016(
+              chm,
+              treetops,
+              th_tree = 2,
+              th_seed = 0.45,
+              th_cr = 0.55,
+              max_cr = 10,
+              ID = "treeID"
+              )

@@ -17,7 +17,7 @@ root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           
 #source environment script                                                                  
-source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.R")))    
+source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R")))    
 
 #############################################################################################
 #############################################################################################
@@ -26,6 +26,7 @@ library(lidR)
 
 # read large las file via catalog
 LASfile <- "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/11225103_HH.las"
+
 #readLAS(LASfile)
 ctg = catalog(LASfile)
 
@@ -33,25 +34,11 @@ ctg = catalog(LASfile)
 tree <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tree.shp"))
 shrub <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub.shp"))
 tree_shrub <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tree_shrub.shp"))
-shrub_2 <- rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"shrub_2.shp"))
+
 
 
 
 # clip las file to polygon extent
-
-# tree shrub
-i = 1
-ts = tree_shrub@polygons[[1]]@Polygons[[i]]
-
-pts = lasclip(ctg, ts)
-
-# write las file
-writeLAS(pts, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/tree_shrub.las")
-
-# plot las file
-plot(pts)
-
-
 
 # tree
 i = 1
@@ -64,6 +51,7 @@ writeLAS(pt, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_site
 
 # plot las file
 plot(pt)
+
 
 
 
@@ -81,16 +69,18 @@ plot(ps)
 
 
 
-# shrub 2
-i = 1
-s2 = shrub_2@polygons[[1]]@Polygons[[i]]
 
-ps2 = lasclip(ctg, s2)
+# tree shrub
+i = 1
+ts = tree_shrub@polygons[[1]]@Polygons[[i]]
+
+pts = lasclip(ctg, ts)
 
 # write las file
-writeLAS(ps2, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/shrub_2.las")
+writeLAS(pts, "E:/Github/Treelines-of-the-world/data/001_org/03_Segmentation_sites/las/tree_shrub.las")
 
 # plot las file
-plot(ps2)
-plot(shrub_2, add = T)
+plot(pts)
+
+
 

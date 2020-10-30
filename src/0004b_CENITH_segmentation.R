@@ -6,8 +6,7 @@ require(envimaR)
 require(link2GI)                             
 
 # define needed libs                                                          
-libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel") 
-
+libs = c("link2GI","sf","mapview","rgdal","CENITH") 
 # define src folder
 pathdir = "repo/src/"
 
@@ -17,7 +16,7 @@ root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           
 #source environment script                                                                  
-source(file.path(root_folder, paste0(pathdir,"0000b_environment_setup_with_SAGA.R")))    
+source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R")))    
 
 #############################################################################################
 #############################################################################################
@@ -28,39 +27,54 @@ require(CENITH)
 chm_tree_shrub  <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif")) 
 chm_tree        <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree.tif"))
 chm_shrub       <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_shrub.tif"))
-chm_shrub_2     <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_shrub_2.tif"))
+
 
 vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree_shrub_t.shp"))
 vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree.shp"))
 vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
-vp_shrub_2      <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub_2.shp"))
 
 
-# compare coordinate system of datasets
-compareCRS(chm,vp)
+# CENITH segmentation (use best hitrate settings from bestsegval)
+# tree
+segt <- TreeSeg(chm=chm_tree, 
+               a=c(0.2), 
+               b=c(0.7),
+               h=c(0.5),
+               MIN=10,
+               MAX=50000,
+               CHMfilter=3
+)
 
-#run cluster
+# shrub
+segs <- TreeSeg(chm=chm_shrub, 
+               a=c(0.2), 
+               b=c(0.7),
+               h=c(0.5),
+               MIN=10,
+               MAX=50000,
+               CHMfilter=3
+)
 
-cl =  makeCluster(detectCores()-1)
-registerDoParallel(cl)
+# tree shrub
+segts <- TreeSeg(chm=chm_tree_shrub, 
+               a=c(0.2), 
+               b=c(0.7),
+               h=c(0.5),
+               MIN=10,
+               MAX=50000,
+               CHMfilter=3
+)
+# visualization
+mapview::mapview(segt)+vp_tree+chm_tree
+mapview::mapview(segs)+vp_shrub+chm_shrub
+mapview::mapview(segts)+vp_tree_shrub+chm_tree_shrub
 
+# write data
+writeOGR(segt, file.path(envrmt$path_002_processed, "cenith_seg_t.shp"),layer="testShape",driver="ESRI Shapefile")
+writeOGR(segs, file.path(envrmt$path_002_processed, "cenith_seg_s.shp"),layer="testShape",driver="ESRI Shapefile")
+writeOGR(segts, file.path(envrmt$path_002_processed, "cenith_seg_ts.shp"),layer="testShape",driver="ESRI Shapefile")
 
-# CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
-val <- BestSegVal(chm = chm_shrub_2, 
-                  a = seq(0.1,0.9,0.1), 
-                  b = seq(0.1,0.9,0.1),
-                  h = seq(0.1,2,0.1),
-                  vp = vp_shrub_2,
-                  MIN = 10,
-                  MAX = 500000,
-                  filter = 1
-                  )
-
-#stop cluster
-stopCluster(cl)
-
-# write table
-write.table(val, file.path(envrmt$path_002_processed,"validaton_accuracy_scrub_2.csv"))
-
-# view table
-tab <- read.table(file.path(envrmt$path_002_processed,"validaton_accuracy_shrub_2.csv"))
+# load segments
+tree <-  rgdal::readOGR(file.path(envrmt$path_002_processed, "cenith_seg_t.shp"))
+shrub <-  rgdal::readOGR(file.path(envrmt$path_002_processed, "cenith_seg_s.shp"))
+tree_shrub <-  rgdal::readOGR(file.path(envrmt$path_002_processed, "cenith_seg_ts.shp"))
