@@ -43,16 +43,17 @@ registerDoParallel(cl)
 itc <- chmseg_ITC(
   chm = chm_tree,
   EPSG = 31254,
-  movingWin = 7,
+  movingWin = 21,
   TRESHSeed = 0.45,
   TRESHCrown = 0.55,
   minTreeAlt = 2,
   maxCrownArea = 10000)
 
-#view
-mapview(itc)+vp_tree +chm_tree
 
 # plot with maptoo
 plot(chm_tree)
 plot(vp_tree, add = TRUE)
 plot(itc, add = TRUE)
+
+#view PROBLEM
+mapview(itc)+vp_tree +chm_tree
