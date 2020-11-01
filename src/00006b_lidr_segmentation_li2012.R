@@ -6,7 +6,7 @@ require(envimaR)
 require(link2GI)                             
 
 # define needed libs                                                          
-libs = c("link2GI") 
+libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel", "uavRst","maptools","lidR")  
 # define src folder
 pathdir = "repo/src/"
 

@@ -6,7 +6,7 @@ require(envimaR)
 require(link2GI)                             
 
 # define needed libs                                                          
-libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel") 
+libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel","uavRst","maptools") 
 
 # define src folder
 pathdir = "repo/src/"
@@ -22,9 +22,6 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 #############################################################################################
 
-require(uavRst) 
-require(mapview)
-require(maptools)
 
 # load data
 chm_tree_shrub  <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif")) 
@@ -37,19 +34,28 @@ rgb_tree        <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB
 rgb_shrub       <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB, "RGB_shrub.tif"))
 
 
-vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree_shrub_t.shp"))
-vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree.shp"))
-vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
+vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_ts.shp"))
+vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_t.shp"))
+vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_s.shp"))
+
+#run cluster
+
+cl =  makeCluster(detectCores()-1)
+registerDoParallel(cl)
 
 
+# chm smoothing
+chm_tree <- CHMsmoothing(chm_tree, filter = "Gaussian", ws = 39)
+chm_shrub <- CHMsmoothing(chm_shrub, filter = "Gaussian", ws = 39)
+chm_tree_shrub <- CHMsmoothing(chm_tree_shrub, filter = "Gaussian", ws = 39)
 
 
 # rLidar treeposition finder
 
 # tree
 rl_t <- treepos_RL(chm = chm_tree,
-                     movingWin = 7,
-                     minTreeAlt = 10)
+                     movingWin = 23,
+                     minTreeAlt = 1.5)
 
 #convert treetop raster to point shape
 pt = rasterToPoints(rl_t ,spatial = TRUE)
@@ -72,8 +78,8 @@ plot(pt, las=1, bty="l", col="red", pch=19, add = T)
 # 2 shrub
 #forest tools treetop finder 
 rl_s <- treepos_RL(chm = chm_shrub,
-                   movingWin = 7,
-                   minTreeAlt = 1)
+                   movingWin = 13,
+                   minTreeAlt = 0.6)
 
 #convert treetop raster to point shape
 ps = rasterToPoints(rl_s,spatial = TRUE)
@@ -97,7 +103,7 @@ plot(ps, las=1, bty="l", col="red", pch=19, add = T)
 # 3 tree shrub
 rl_ts <- treepos_RL(chm = chm_tree_shrub,
                    movingWin = 7,
-                   minTreeAlt = 10)
+                   minTreeAlt = 0.6)
 
 #convert treetop raster to point shape
 pts = rasterToPoints(rl_ts,spatial = TRUE)
