@@ -71,8 +71,8 @@ itcs <- chmseg_ITC(
 
 
 # plot with maptoo
-plot(chm_tree)
-plot(vp_tree, add = TRUE)
+plot(chm_shrub)
+plot(vp_shrub, add = TRUE)
 plot(itcs, add = TRUE)
 
 
@@ -89,8 +89,8 @@ itcts <- chmseg_ITC(
 
 
 # plot with maptoo
-plot(chm_tree)
-plot(vp_tree, add = TRUE)
+plot(chm_tree_shrub)
+plot(vp_tree_shrub, add = TRUE)
 plot(itcts, add = TRUE)
 
 
