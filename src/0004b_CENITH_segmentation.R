@@ -33,6 +33,12 @@ vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_s
 vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_tree.shp"))
 vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
 
+#run cluster
+
+cl =  makeCluster(detectCores()-1)
+registerDoParallel(cl)
+
+
 
 # CENITH segmentation (use best hitrate settings from bestsegval)
 # tree
