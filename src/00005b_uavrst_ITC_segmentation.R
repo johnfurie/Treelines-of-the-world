@@ -6,7 +6,7 @@ require(envimaR)
 require(link2GI)                             
 
 # define needed libs                                                          
-libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel","uavRst") 
+libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel") 
 
 # define src folder
 pathdir = "repo/src/"
@@ -40,57 +40,20 @@ cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
 # ITC
-
-# tree 33
-itct <- chmseg_ITC(
+itc <- chmseg_ITC(
   chm = chm_tree,
   EPSG = 31254,
-  movingWin = 36,
+  movingWin = 21,
   TRESHSeed = 0.45,
   TRESHCrown = 0.55,
   minTreeAlt = 2,
   maxCrownArea = 10000)
+
 
 # plot with maptoo
 plot(chm_tree)
 plot(vp_tree, add = TRUE)
-plot(itct, add = TRUE)
-
-
-
-
-# shrub
-itcs <- chmseg_ITC(
-  chm = chm_shrub,
-  EPSG = 31254,
-  movingWin = 11,
-  TRESHSeed = 0.45,
-  TRESHCrown = 0.55,
-  minTreeAlt = 2,
-  maxCrownArea = 10000)
-
-# plot with maptoo
-plot(chm_shrub)
-plot(vp_shrub, add = TRUE)
-plot(itcs, add = TRUE)
-
-
-
-
-# tree shrub
-itcts <- chmseg_ITC(
-  chm = chm_tree_shrub,
-  EPSG = 31254,
-  movingWin = 29,
-  TRESHSeed = 0.45,
-  TRESHCrown = 0.55,
-  minTreeAlt = 2,
-  maxCrownArea = 10000)
-
-# plot with maptoo
-plot(chm_tree_shrub)
-plot(vp_tree_shrub, add = TRUE)
-plot(itcts, add = TRUE)
+plot(itc, add = TRUE)
 
 #view PROBLEM
 mapview(itc)+vp_tree +chm_tree
