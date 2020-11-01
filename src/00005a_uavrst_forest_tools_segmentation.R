@@ -44,7 +44,8 @@ compareCRS(chm_tree,vp_tree)
 cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
-
+# rasterize point shape
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 #forest tools segmentation
 ft <- chmseg_FT(

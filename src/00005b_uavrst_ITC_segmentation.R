@@ -40,10 +40,12 @@ cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
 # ITC
-itc <- chmseg_ITC(
+#
+# tree
+itct <- chmseg_ITC(
   chm = chm_tree,
   EPSG = 31254,
-  movingWin = 21,
+  movingWin = 33,
   TRESHSeed = 0.45,
   TRESHCrown = 0.55,
   minTreeAlt = 2,
@@ -53,7 +55,44 @@ itc <- chmseg_ITC(
 # plot with maptoo
 plot(chm_tree)
 plot(vp_tree, add = TRUE)
-plot(itc, add = TRUE)
+plot(itct, add = TRUE)
+
+
+
+# shrub
+itcs <- chmseg_ITC(
+  chm = chm_shrub,
+  EPSG = 31254,
+  movingWin = 33,
+  TRESHSeed = 0.45,
+  TRESHCrown = 0.55,
+  minTreeAlt = 2,
+  maxCrownArea = 10000)
+
+
+# plot with maptoo
+plot(chm_tree)
+plot(vp_tree, add = TRUE)
+plot(itcs, add = TRUE)
+
+
+
+# tree shrub
+itcts <- chmseg_ITC(
+  chm = chm_tree_shrub,
+  EPSG = 31254,
+  movingWin = 33,
+  TRESHSeed = 0.45,
+  TRESHCrown = 0.55,
+  minTreeAlt = 2,
+  maxCrownArea = 10000)
+
+
+# plot with maptoo
+plot(chm_tree)
+plot(vp_tree, add = TRUE)
+plot(itcts, add = TRUE)
+
 
 #view PROBLEM
 mapview(itc)+vp_tree +chm_tree
