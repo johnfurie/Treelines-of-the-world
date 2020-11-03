@@ -19,41 +19,43 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 #############################################################################################
 
-# load the data
-rfModel <- readRDS(file.path(envrmt$path_002_processed, "rf_model.rds"))
-head(rfModel)
-### evaluate the model
+# assign value to polygons
+seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_dal_ts.shp"))
+specter  <- raster::raster(file.path(envrmt$path_002_processed,"ft_prediction.tif"))
 
-plot(varImp(rfModel))
+#make dataframe with treeID
+b <- seg$treeID
+head(b)
+b <- as.data.frame(b)
+head(b)
+#rownames
+names(b) <- (c("treeID"))
 
-rfModel$selectedvars
+# extract values of predicted raster and assign to segmentation polygons
+a <- extract(specter, seg, fun=mean, na.rm=TRUE)
+head(a)
+a <- as.data.frame(a)
+#rownames
+names(a) <- (c("value"))
+#rounding numbers
+a <- a %>% mutate_at(vars(starts_with("value")), funs(round(a$value, 0)))
+head(a)
+#combine 2 dataframes
+c <- cbind(a,b)
+head(c)
 
-plot_ffs(rfModel)
-plot_ffs(rfModel, plotType = "selected")
+#merge with polygon
+oo <- merge(seg,c, by="treeID", all=T)
 
-pred <- predict(rfModel, dat)
+head(oo)
+plot(oo)
 
-cfmatrix <- caret::confusionMatrix(pred, dat$FE_DWBAGRP)
-print(cfmatrix)
-
-### predict tree species 
-rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_shrub_map.tif"))
-rgb  <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB, "RGB_tree_shrub.tif"))
-rs <- stack(rs,rgb)
-head(rs)
-names(rs) <- (c("pca1","pca2","pca3","red","green","blue"))
+# write VECTOR
+writeOGR(oo, file.path(envrmt$path_002_processed, "lidr_pred.shp"),layer="testShape",driver="ESRI Shapefile")
 
 
-cl =  makeCluster(detectCores()-1) #open cluster
-registerDoParallel(cl)
 
-specter <- raster::predict(rs, rfModel)
-stopCluster(cl) #close cluster
 
-writeRaster(specter, file.path(envrmt$path_002_processed,"ft_prediction.tif"), overwrite=T)
-
-plot(specter)
-plot(seg, add=T)
 
 
 
