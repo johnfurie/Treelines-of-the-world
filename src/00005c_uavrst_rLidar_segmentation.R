@@ -103,7 +103,7 @@ plot(rls,  add = TRUE)
 # treeposition
 rl_ts <- treepos_RL(chm = chm_tree_shrub,
                    movingWin = 7,
-                   minTreeAlt = 0.6)
+                   minTreeAlt = 0.8)
 
 pts = rasterToPoints(rl_ts,spatial = TRUE)
 plot(pts)
@@ -124,3 +124,4 @@ plot(rlts,  add = TRUE)
 writeOGR(rlt, file.path(envrmt$path_002_processed, "rl_seg_t.shp"),layer="testShape",driver="ESRI Shapefile")
 writeOGR(rls, file.path(envrmt$path_002_processed, "rl_seg_s.shp"),layer="testShape",driver="ESRI Shapefile")
 writeOGR(rlts, file.path(envrmt$path_002_processed, "rl_seg_ts.shp"),layer="testShape",driver="ESRI Shapefile")
+

@@ -11,7 +11,7 @@ libs = c("link2GI","lidR")
 pathdir = "repo/src/"
 
 #set root folder for uniPC or laptop                                                        
-root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",                    
+root_folder = alternativeEnvi(root_folder = "C:/Users/Niklas/Documents/GitHub/Treelines-of-the-world",                    
                               alt_env_id = "COMPUTERNAME",                                  
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           
@@ -57,8 +57,8 @@ col <- pastel.colors(200)
 #find treetops
 
 # 1. tree
-ttopst <- find_trees(last, lmf(ws = 3))
-
+ttopst <- find_trees(last, lmf(ws = 3.5))
+#library(rgdal)
 # write data
 writeOGR(ttopst, file.path(envrmt$path_002_processed, "lidr_tpos_t.shp"),layer="testShape",driver="ESRI Shapefile")
 pt   <-  rgdal::readOGR(file.path(envrmt$path_002_processed,"lidr_tpos_t.shp"))
@@ -79,8 +79,8 @@ add_treetops3d(x, ttopst)
 
 
 
-# 2. shrub
-ttopss <- find_trees(lass, lmf(ws = 5))
+  # 2. shrub
+ttopss <- lidR::find_trees(lass, lmf(ws = 1.5))
 
 
 # write data
@@ -104,7 +104,7 @@ add_treetops3d(x, ttopss)
 
 
 # 3. tree shrub
-ttopsts <- find_trees(lasts, lmf(ws = 5))
+ttopsts <- find_trees(lasts, lmf(ws = 6))
 
 # write data
 writeOGR(ttopsts, file.path(envrmt$path_002_processed, "lidr_tpos_ts.shp"),layer="testShape",driver="ESRI Shapefile")

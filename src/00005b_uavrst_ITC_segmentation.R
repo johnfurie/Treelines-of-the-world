@@ -12,7 +12,7 @@ libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel")
 pathdir = "repo/src/"
 
 #set root folder for uniPC or laptop                                                        
-root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",                    
+root_folder = alternativeEnvi(root_folder = "C:/Users/Niklas/Documents/GitHub/Treelines-of-the-world",                    
                               alt_env_id = "COMPUTERNAME",                                  
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           
@@ -80,7 +80,7 @@ itcs <- chmseg_ITC(
   movingWin = 11,
   TRESHSeed = 0.45,
   TRESHCrown = 0.55,
-  minTreeAlt = 0.7,
+  minTreeAlt = 0.4,
   maxCrownArea = 10000)
 
 
@@ -99,7 +99,7 @@ itcts <- chmseg_ITC(
   movingWin = 33,
   TRESHSeed = 0.45,
   TRESHCrown = 0.55,
-  minTreeAlt = 1.1,
+  minTreeAlt = .8,
   maxCrownArea = 10000)
 
 

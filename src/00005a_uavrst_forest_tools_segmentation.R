@@ -12,7 +12,7 @@ libs = c("link2GI","sf","mapview","rgdal","CENITH","doParallel","parallel", "uav
 pathdir = "repo/src/"
 
 #set root folder for uniPC or laptop                                                        
-root_folder = alternativeEnvi(root_folder = "E:/Github/Treelines-of-the-world",                    
+root_folder = alternativeEnvi(root_folder = "C:/Users/Niklas/Documents/GitHub/Treelines-of-the-world",                    
                               alt_env_id = "COMPUTERNAME",                                  
                               alt_env_value = "PCRZP",                                      
                               alt_env_root_folder = "F:/edu/Envimaster-Geomorph")           
@@ -36,7 +36,7 @@ vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_s
 
 # compare coordinate system of datasets
 compareCRS(chm_tree,vp_tree)
-
+chm_tree@crs@projargs <- "+proj=tmerc +lat_0=0 +lon_0=10.3333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +units=m +no_defs"
 #run cluster
 
 cl =  makeCluster(detectCores()-1)
@@ -56,7 +56,7 @@ chm_tree_shrub <- CHMsmoothing(chm_tree_shrub, filter = "Gaussian", ws = 39)
 
 # treeposition
 ft_t <- treepos_FT(chm = chm_tree,
-                   minTreeAlt = 1.5,
+                   minTreeAlt = 2,
                    maxCrownArea = 5000)
 
 pt = rasterToPoints(ft_t$treeID,spatial = TRUE)
@@ -95,7 +95,7 @@ plot(ps)
 fts <- chmseg_FT(
   treepos = ft_s,
   chm = chm_shrub,
-  minTreeAlt = 0.6,
+  minTreeAlt = 0.4,
   format = "polygons",
   winRadius = 1.5,
   verbose = FALSE)
@@ -113,7 +113,7 @@ plot(vp_shrub, add = TRUE)
 # tree shrub
 # treeposition
 ft_ts <- treepos_FT(chm = chm_tree_shrub,
-                   minTreeAlt = 1.3,
+                   minTreeAlt = 1,
                    maxCrownArea = 5000)
 
 pts = rasterToPoints(ft_ts$treeID,spatial = TRUE)
@@ -123,7 +123,7 @@ plot(pts)
 ftts <- chmseg_FT(
   treepos = ft_ts,
   chm = chm_tree_shrub,
-  minTreeAlt = 1.3,
+  minTreeAlt = 0.8,
   format = "polygons",
   winRadius = 1.5,
   verbose = FALSE)

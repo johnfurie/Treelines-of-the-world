@@ -43,9 +43,9 @@ registerDoParallel(cl)
 # CENITH segmentation (use best hitrate settings from bestsegval)
 # tree
 segt <- TreeSeg(chm=chm_tree, 
-               a=c(0.2), 
-               b=c(0.7),
-               h=c(0.5),
+               a=c(0.21), 
+               b=c(0.9),
+               h=c(2),
                MIN=10,
                MAX=50000,
                CHMfilter=3
@@ -53,9 +53,9 @@ segt <- TreeSeg(chm=chm_tree,
 
 # shrub
 segs <- TreeSeg(chm=chm_shrub, 
-               a=c(0.2), 
-               b=c(0.7),
-               h=c(0.5),
+               a=c(0.9), 
+               b=c(0.9),
+               h=c(0.1),
                MIN=10,
                MAX=50000,
                CHMfilter=3
@@ -63,9 +63,9 @@ segs <- TreeSeg(chm=chm_shrub,
 
 # tree shrub
 segts <- TreeSeg(chm=chm_tree_shrub, 
-               a=c(0.2), 
-               b=c(0.7),
-               h=c(0.5),
+               a=c(0.3), 
+               b=c(0.1),
+               h=c(0.2),
                MIN=10,
                MAX=50000,
                CHMfilter=3
