@@ -37,8 +37,8 @@ cfmatrix <- caret::confusionMatrix(pred, dat$FE_DWBAGRP)
 print(cfmatrix)
 
 ### predict tree species 
-rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_shrub_map.tif"))
-rgb  <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB, "RGB_tree_shrub.tif"))
+rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_e2_map.tif"))
+rgb  <- raster::stack(file.path(envrmt$path_02_Ecotone_sites_RGB, "RGB_e2.tif"))
 rs <- stack(rs,rgb)
 head(rs)
 names(rs) <- (c("pca1","pca2","pca3","red","green","blue"))
