@@ -74,16 +74,13 @@ train <- stack(train,rast)
 head(train)
 names(train) <- (c("pca1","pca2","pca3","red","green","blue","train"))
 
-#remove 0 values from shp data
-#a <- as.data.frame(train)
-#train <- a
-#train$train[train$train == 0] <- NA
-# remove rows with na
-#train <- train[complete.cases(train), ]
+#crop to shp extent
+r2 <- crop(train, extent(tr))
+
 
 # RASTER
-writeRaster(train, file.path(envrmt$path_002_processed,"traindat_study.tif"),format="GTiff",overwrite=TRUE)
-saveRDS(train, file.path(envrmt$path_002_processed,"traindat_study.rds"))
+writeRaster(r2, file.path(envrmt$path_002_processed,"traindat_study.tif"),format="GTiff",overwrite=TRUE)
+saveRDS(r2, file.path(envrmt$path_002_processed,"traindat_study.rds"))
 
 
 

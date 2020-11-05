@@ -46,16 +46,17 @@ dat <- dat[complete.cases(dat), ]
 dat$train <- as.factor(dat$train)
 write.table(dat, file.path(envrmt$path_002_processed,"traindat_study.csv"))
 dat <- read.table(file.path(envrmt$path_002_processed,"traindat_study.csv"))
+
 # prepare spatial folds
-index = CAST::CreateSpacetimeFolds(dat,spacevar = "train", k = 5)
+index = CAST::CreateSpacetimeFolds(dat,spacevar = "train", k = 3)
 
 
 # train control for rf model - with LLO-CV based on forest sections
-tC = caret::trainControl(method = "cv", number =  5,  classProbs = TRUE, index = index$index, indexOut = index$indexOut )
+tC = caret::trainControl(method = "cv", number =  3,  classProbs = TRUE, index = index$index, indexOut = index$indexOut )
 
-# training the model note that more than 50k objekts are nt possible with 16gb ram
+# training the model note that more than 50k objects are not possible with 16gb ram
 
-cl =  makeCluster(detectCores()-2)
+cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
 rfModel = CAST::ffs(dat[1:7], 
