@@ -50,7 +50,7 @@ registerDoParallel(cl)
 specter <- raster::predict(rs, rfModel)
 stopCluster(cl) #close cluster
 
-writeRaster(specter, file.path(envrmt$path_002_processed,"ft_prediction.tif"), overwrite=T)
+writeRaster(specter, file.path(envrmt$path_002_processed,"rf_prediction.tif"), overwrite=T)
 
 plot(specter)
 plot(seg, add=T)
