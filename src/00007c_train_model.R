@@ -59,7 +59,7 @@ tC = caret::trainControl(method = "cv", number =  3,  classProbs = TRUE, index =
 cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
-rfModel = CAST::ffs(dat[1:7], 
+rfModel = CAST::ffs(dat[1:6], 
                     dat$train, 
                     method = "rf", withinSE = FALSE,
                     importance = TRUE, trainControl = tC)
