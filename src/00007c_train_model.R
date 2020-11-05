@@ -26,19 +26,15 @@ dat1 <- readRDS(file.path(envrmt$path_002_processed,"traindat_study.rds"))
 plot(dat1)
 head(dat1)
 
-
+# as dataframe
 a <- as.data.frame(dat1)
 dat <- a
 head(dat)
 gc()
+
 # make missing values to na
 dat$train[dat$train == 0] <- NA
-dat$red[dat$red == 0] <- NA
-dat$green[dat$green == 0] <- NA
-dat$blue[dat$blue == 0] <- NA
-dat$pca1[dat$pca1 == 0] <- NA
-dat$pca2[dat$pca2 == 0] <- NA
-dat$pca3[dat$pca3 == 0] <- NA
+
 
 # remove rows with na
 dat <- dat[complete.cases(dat), ]
@@ -56,16 +52,19 @@ tC = caret::trainControl(method = "cv", number =  3,  classProbs = TRUE, index =
 
 # training the model note that more than 50k objects are not possible with 16gb ram
 
+#open cluster
 cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
-rfModel = CAST::ffs(dat[1:6], 
+rfModel = CAST::ffs(dat[1:7], 
                     dat$train, 
                     method = "rf", withinSE = FALSE,
                     importance = TRUE, trainControl = tC)
+
+# stop cluster
 stopCluster(cl)
 
-
+# save model
 saveRDS(rfModel,file.path(envrmt$path_002_processed, "rf_model.rds"))
 
 

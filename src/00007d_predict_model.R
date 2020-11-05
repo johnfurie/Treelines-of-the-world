@@ -39,9 +39,11 @@ print(cfmatrix)
 ### predict tree species 
 rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_e2_map.tif"))
 rgb  <- raster::stack(file.path(envrmt$path_02_Ecotone_sites_RGB, "RGB_e2.tif"))
+chm  <- raster::stack(file.path(envrmt$path_02_Ecotone_sites_CHM, "CHM_e2.tif"))
 rs <- stack(rs,rgb)
+rs <- stack(rs,chm)
 head(rs)
-names(rs) <- (c("pca1","pca2","pca3","red","green","blue"))
+names(rs) <- (c("pca1","pca2","pca3","red","green","blue","height"))
 
 
 cl =  makeCluster(detectCores()-1) #open cluster
@@ -50,7 +52,7 @@ registerDoParallel(cl)
 specter <- raster::predict(rs, rfModel)
 stopCluster(cl) #close cluster
 
-writeRaster(specter, file.path(envrmt$path_002_processed,"rf_prediction.tif"), overwrite=T)
+writeRaster(specter, file.path(envrmt$path_002_processed,"rf_prediction_e2.tif"), overwrite=T)
 
 plot(specter)
 plot(seg, add=T)

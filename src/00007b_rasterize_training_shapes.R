@@ -23,6 +23,8 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 ind  <- raster::stack(file.path(envrmt$path_002_processed, "pca_study_map.tif"))
 rgb  <- raster::stack(file.path(envrmt$path_002_processed, "RGB_study_area_clip.tif")) 
 tr <- readOGR(dsn=file.path(envrmt$path_002_processed, "train_new.shp"))
+chm  <- raster::stack(file.path(envrmt$path_002_processed, "CHM_study_area_clean.tif"))
+
 seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_dal_ts.shp"))
 head(seg)
 
@@ -68,11 +70,15 @@ plot(rast)
 #stack raster
 train <- stack(segs,rast)
 
+
 train <- stack(ind,rgb)
+#crop to shp extent
+chm <- crop(chm, extent(ext_rst))
+train <- stack(train,chm)
 train <- stack(train,rast)
 
 head(train)
-names(train) <- (c("pca1","pca2","pca3","red","green","blue","train"))
+names(train) <- (c("pca1","pca2","pca3","red","green","blue","height","train"))
 
 #crop to shp extent
 r2 <- crop(train, extent(tr))
