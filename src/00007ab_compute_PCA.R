@@ -20,7 +20,7 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 
 #load indices
-ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_shrub.tif"))
+ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_clip.tif"))
 head(ind)
 
 #set colnames
@@ -41,18 +41,18 @@ eigvalue.pca <- factoextra::get_eigenvalue(pca$model)
 plot(eigvalue.pca)
 
 #save PCA file
-saveRDS(pca,file = file.path(envrmt$path_002_processed,"pca_shrub.rds"))
+saveRDS(pca,file = file.path(envrmt$path_002_processed,"pca_study.rds"))
 #read PCA
-pca <- readRDS(file.path(envrmt$path_002_processed, "pca_shrub.rds"))
+pca <- readRDS(file.path(envrmt$path_002_processed, "pca_study.rds"))
 
 #write PCA maps
-writeRaster(pca$map$PC1, filename = file.path(envrmt$path_002_processed, "pca1_s.tif"), overwrite=TRUE)
-writeRaster(pca$map$PC2, filename = file.path(envrmt$path_002_processed, "pca2_s.tif"), overwrite=TRUE)
-writeRaster(pca$map$PC3, filename = file.path(envrmt$path_002_processed, "pca3_s.tif"), overwrite=TRUE)
+writeRaster(pca$map$PC1, filename = file.path(envrmt$path_002_processed, "pca1_study.tif"), overwrite=TRUE)
+writeRaster(pca$map$PC2, filename = file.path(envrmt$path_002_processed, "pca2_study.tif"), overwrite=TRUE)
+writeRaster(pca$map$PC3, filename = file.path(envrmt$path_002_processed, "pca3_study.tif"), overwrite=TRUE)
 
 #stack
 a <- stack(pca$map$PC1,pca$map$PC2,pca$map$PC3)
-writeRaster(a, filename = file.path(envrmt$path_002_processed, "pca_shrub_map.tif"), overwrite=TRUE)
+writeRaster(a, filename = file.path(envrmt$path_002_processed, "pca_study_map.tif"), overwrite=TRUE)
 
 #save PCA file
-saveRDS(a,file = file.path(envrmt$path_002_processed,"pca_shrub_map.rds"))
+saveRDS(a,file = file.path(envrmt$path_002_processed,"pca_study_map.rds"))

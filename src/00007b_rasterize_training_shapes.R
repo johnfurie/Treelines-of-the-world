@@ -20,14 +20,14 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 
 # load files 
-ind  <- raster::stack(file.path(envrmt$path_002_processed, "pca_shrub_map.tif"))
-rgb  <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB, "RGB_tree_shrub.tif")) 
-tr <- readOGR(dsn=file.path(envrmt$path_03_Segmentation_sites_shp, "train_ts.shp"))
+ind  <- raster::stack(file.path(envrmt$path_002_processed, "pca_study_map.tif"))
+rgb  <- raster::stack(file.path(envrmt$path_002_processed, "RGB_study_area_clip.tif")) 
+tr <- readOGR(dsn=file.path(envrmt$path_002_processed, "train_new.shp"))
 seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_dal_ts.shp"))
 head(seg)
 
 #extent
-ext_rst <- raster::raster(file.path(envrmt$path_03_Segmentation_sites_CHM, "CHM_tree_shrub.tif"))
+ext_rst <- raster::raster(file.path(envrmt$path_002_processed, "RGB_study_area_clip.tif"))
 ext <- raster::extent(ext_rst)
 
 
@@ -54,25 +54,36 @@ head(segs)
 
 # training shapes spectral
 # rasterize
-gdalUtils::gdal_rasterize(src_datasource = file.path(envrmt$path_03_Segmentation_sites_shp, "train_ts.shp"), #input buffer layer polygon
-                          dst_filename = file.path(envrmt$path_002_processed, "train_ras_ts.tif"), #output rasterrized
+gdalUtils::gdal_rasterize(src_datasource = file.path(envrmt$path_002_processed, "train_new.shp"), #input buffer layer polygon
+                          dst_filename = file.path(envrmt$path_002_processed, "train_ras_study.tif"), #output rasterrized
                           a ="species",
                           te = c(ext[1],ext[3],ext[2],ext[4]),
                           tr = c(xres(ext_rst),yres(ext_rst)),
                           output_Raster = T)
 
 # load raster
-rast = raster::raster(file.path(envrmt$path_002_processed, "train_ras_ts.tif"))
+rast = raster::raster(file.path(envrmt$path_002_processed, "train_ras_study.tif"))
 plot(rast)
 
 #stack raster
-train <- stack(segs,rast) 
+train <- stack(segs,rast)
+
+train <- stack(ind,rgb)
+train <- stack(train,rast)
+
 head(train)
-names(train) <- (c("lidr_seg","pca1","pca2","pca3","red","green","blue","train"))
+names(train) <- (c("pca1","pca2","pca3","red","green","blue","train"))
+
+#remove 0 values from shp data
+#a <- as.data.frame(train)
+#train <- a
+#train$train[train$train == 0] <- NA
+# remove rows with na
+#train <- train[complete.cases(train), ]
 
 # RASTER
-writeRaster(train, file.path(envrmt$path_002_processed,"traindat_ts.tif"),format="GTiff",overwrite=TRUE)
-saveRDS(train, file.path(envrmt$path_002_processed,"traindat_ts.rds"))
+writeRaster(train, file.path(envrmt$path_002_processed,"traindat_study.tif"),format="GTiff",overwrite=TRUE)
+saveRDS(train, file.path(envrmt$path_002_processed,"traindat_study.rds"))
 
 
 

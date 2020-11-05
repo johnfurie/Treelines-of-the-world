@@ -28,21 +28,27 @@ e2 <- readOGR(dsn=file.path(envrmt$path_02_Ecotone_sites_shp, "e2.shp"))
 e3 <- readOGR(dsn=file.path(envrmt$path_02_Ecotone_sites_shp, "e3.shp"))
 
 
+rf = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study.tif"))
+
+rf = raster::stack(file.path(envrmt$path_002_processed, "RGB_study_area.tif"))
+t <- readOGR(dsn=file.path(envrmt$path_002_processed, "study.shp"))
+
+
 rf  <- raster::stack(file.path(envrmt$path_002_processed, "rf_prediction_study.tif"))
 
 
-## Example RasterLayer
-r <- raster(nrow=1e3, ncol=1e3, crs=proj4string(SPDF))
-r[] <- 1:length(r)
 
 ## crop and mask
 r2 <- crop(rf, extent(t))
 r3 <- mask(r2, t)
 
 ## Check that it worked
-plot(r3)
+plot(r2$veg_ind_study.1)
 plot(t, add=TRUE, lwd=2)
 
+writeRaster(r2, file.path(envrmt$path_002_processed,"RGB_study_area_clip.tif"),format="GTiff",overwrite=TRUE)
+
+writeRaster(r2, file.path(envrmt$path_002_processed,"veg_ind_study_clip.tif"),format="GTiff",overwrite=TRUE)
 
 writeRaster(r3, file.path(envrmt$path_002_processed,"rf_prediction_t.tif"),format="GTiff",overwrite=TRUE)
 writeRaster(r3, file.path(envrmt$path_002_processed,"rf_prediction_s.tif"),format="GTiff",overwrite=TRUE)
