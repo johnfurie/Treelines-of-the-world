@@ -39,7 +39,7 @@ print(cfmatrix)
 ### predict tree species 
 rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_e2_map.tif"))
 rgb  <- raster::stack(file.path(envrmt$path_02_Ecotone_sites_RGB, "RGB_e2.tif"))
-chm  <- raster::stack(file.path(envrmt$path_02_Ecotone_sites_CHM, "CHM_e2.tif"))
+
 rs <- stack(rs,rgb)
 rs <- stack(rs,chm)
 head(rs)
