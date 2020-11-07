@@ -20,7 +20,7 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 
 #load indices
-ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_all2.tif"))
+ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_all_na.tif"))
 ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_n_e2.tif"))
 ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_n_e3.tif"))
 head(ind)
@@ -31,8 +31,17 @@ names(ind) <-c("red","green","blue","nir","chm","NDVI","TDVI","SR","MSR","VVI","
 
 head(ind)
 
+#na to 0
+#ind[is.na(ind[])] <- 0 
+
+writeRaster(ind, file.path(envrmt$path_002_processed,"veg_ind_study_all2na.tif"),format="GTiff",overwrite=TRUE)
+ind  <- raster::stack(file.path(envrmt$path_002_processed,"veg_ind_study_all2na.tif"))
+
 #get rid of last raster
 #ind <- ind[[1:7]]
+
+cl =  makeCluster(detectCores()-1) #open cluster
+registerDoParallel(cl)
 
 #calculate PCA
 pca = RStoolbox::rasterPCA(ind,maskCheck = T, spca = T, nComp = 3)                    

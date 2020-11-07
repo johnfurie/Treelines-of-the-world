@@ -4,7 +4,7 @@ require(envimaR)
 require(link2GI)                             
 
 # define needed libs                                                          
-libs = c("link2GI","lidR","LEGION", "rgdal") 
+libs = c("link2GI","lidR","LEGION", "rgdal","doParallel") 
 # define src folder
 pathdir = "repo/src/"
 
@@ -92,6 +92,16 @@ head(ind_stk)
 writeRaster(ind_stk, file.path(envrmt$path_002_processed,"veg_ind_study_all.tif"),format="GTiff",overwrite=TRUE)
 ind_stk  <- raster::stack(file.path(envrmt$path_002_processed,"veg_ind_study_all.tif"))
 
+cl =  makeCluster(detectCores()-1) #open cluster
+registerDoParallel(cl)
+#na to 0
+ind_stk[is.na(ind_stk[])] <- 0
+
+writeRaster(ind_stk, file.path(envrmt$path_002_processed,"veg_ind_study_allnoNA.tif"),format="GTiff",overwrite=TRUE)
+ind_stk  <- raster::stack(file.path(envrmt$path_002_processed,"veg_ind_study_allnoNA.tif"))
+
+
+
 
 
 #rgb indizes
@@ -102,6 +112,15 @@ head(rgb_ind)
 writeRaster(rgb_ind, file.path(envrmt$path_002_processed,"rgb_ind_study_all.tif"),format="GTiff",overwrite=TRUE)
 rgb_ind  <- raster::stack(file.path(envrmt$path_002_processed,"rgb_ind_study_all.tif"))
 
+cl =  makeCluster(detectCores()-1) #open cluster
+registerDoParallel(cl)
+#na to 0
+rgb_ind[is.na(rgb_ind[])] <- 0
+
+#write data
+writeRaster(rgb_ind, file.path(envrmt$path_002_processed,"rgb_ind_study_allnoNA.tif"),format="GTiff",overwrite=TRUE)
+rgb_ind  <- raster::stack(file.path(envrmt$path_002_processed,"rgb_ind_study_allnoNA.tif"))
+
 
 #stack
 all_stk <- raster::stack(ind_stk,rgb_ind)
@@ -110,8 +129,8 @@ head(all_stk)
 
 
 # write
-writeRaster(all_stk, file.path(envrmt$path_002_processed,"veg_ind_study_all2.tif"),format="GTiff",overwrite=TRUE)
-all_stk       <- raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_all2.tif"))
+writeRaster(all_stk, file.path(envrmt$path_002_processed,"veg_ind_study_all_na.tif"),format="GTiff",overwrite=TRUE)
+all_stk       <- raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_all_na.tif"))
 
 #require(doParallel)
 #open cluster
