@@ -20,7 +20,9 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 
 #load indices
-ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_new31.tif"))
+ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_all2.tif"))
+ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_n_e2.tif"))
+ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_n_e3.tif"))
 head(ind)
 
 #set colnames
@@ -43,18 +45,18 @@ eigvalue.pca <- factoextra::get_eigenvalue(pca$model)
 plot(eigvalue.pca)
 
 #save PCA file
-saveRDS(pca,file = file.path(envrmt$path_002_processed,"pca_train.rds"))
+saveRDS(pca,file = file.path(envrmt$path_002_processed,"pca_study_all.rds"))
 #read PCA
-pca <- readRDS(file.path(envrmt$path_002_processed, "pca_train.rds"))
+pca <- readRDS(file.path(envrmt$path_002_processed, "pca_study_all.rds"))
 
 #write PCA maps
-#writeRaster(pca$map$PC1, filename = file.path(envrmt$path_002_processed, "pca1_study.tif"), overwrite=TRUE)
-#writeRaster(pca$map$PC2, filename = file.path(envrmt$path_002_processed, "pca2_study.tif"), overwrite=TRUE)
-#writeRaster(pca$map$PC3, filename = file.path(envrmt$path_002_processed, "pca3_study.tif"), overwrite=TRUE)
+writeRaster(pca$map$PC1, filename = file.path(envrmt$path_002_processed, "pca1_study_all.tif"), overwrite=TRUE)
+writeRaster(pca$map$PC2, filename = file.path(envrmt$path_002_processed, "pca2_study_all.tif"), overwrite=TRUE)
+writeRaster(pca$map$PC3, filename = file.path(envrmt$path_002_processed, "pca3_study_all.tif"), overwrite=TRUE)
 
 #stack
 a <- stack(pca$map$PC1,pca$map$PC2,pca$map$PC3)
-writeRaster(a, filename = file.path(envrmt$path_002_processed, "pca_train_map.tif"), overwrite=TRUE)
+writeRaster(a, filename = file.path(envrmt$path_002_processed, "pca_study_all_map.tif"), overwrite=TRUE)
 
 #save PCA file
-saveRDS(a,file = file.path(envrmt$path_002_processed,"pca_train_map.rds"))
+saveRDS(a,file = file.path(envrmt$path_002_processed,"pca_e3n_map.rds"))

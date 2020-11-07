@@ -20,16 +20,16 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 
 # load files 
-ind  <- raster::stack(file.path(envrmt$path_002_processed, "pca_study_map.tif"))
-rgb  <- raster::stack(file.path(envrmt$path_002_processed, "RGB_study_area_clip.tif")) 
-tr <- readOGR(dsn=file.path(envrmt$path_002_processed, "train_10.shp"))
+ind  <- raster::stack(file.path(envrmt$path_002_processed, "pca_train_map.tif"))
+rgb  <- raster::stack(file.path(envrmt$path_002_processed, "RGB_train.tif")) 
+tr <- readOGR(dsn=file.path(envrmt$path_002_processed, "train_small.shp"))
 plot(ind)
 
 seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_dal_ts.shp"))
 head(seg)
 
 #extent
-ext_rst <- raster::raster(file.path(envrmt$path_002_processed, "RGB_study_area_clip.tif"))
+ext_rst  <- raster::stack(file.path(envrmt$path_002_processed, "RGB_train.tif")) 
 ext <- raster::extent(ext_rst)
 
 
@@ -56,15 +56,15 @@ head(segs)
 
 # training shapes spectral
 # rasterize
-gdalUtils::gdal_rasterize(src_datasource = file.path(envrmt$path_002_processed, "train_10.shp"), #input buffer layer polygon
-                          dst_filename = file.path(envrmt$path_002_processed, "train_ras_10.tif"), #output rasterrized
+gdalUtils::gdal_rasterize(src_datasource = file.path(envrmt$path_002_processed, "train_small.shp"), #input buffer layer polygon
+                          dst_filename = file.path(envrmt$path_002_processed, "train_ras_small.tif"), #output rasterrized
                           a ="species",
                           te = c(ext[1],ext[3],ext[2],ext[4]),
                           tr = c(xres(ext_rst),yres(ext_rst)),
                           output_Raster = T)
 
 # load raster
-rast = raster::raster(file.path(envrmt$path_002_processed, "train_ras_10.tif"))
+rast = raster::raster(file.path(envrmt$path_002_processed, "train_ras_small.tif"))
 plot(rast)
 
 #stack raster
@@ -83,8 +83,8 @@ r2 <- crop(train, extent(tr))
 
 
 # RASTER
-writeRaster(r2, file.path(envrmt$path_002_processed,"traindat_study.tif"),format="GTiff",overwrite=TRUE)
-saveRDS(r2, file.path(envrmt$path_002_processed,"traindat_study.rds"))
+writeRaster(r2, file.path(envrmt$path_002_processed,"traindat_study_small.tif"),format="GTiff",overwrite=TRUE)
+saveRDS(r2, file.path(envrmt$path_002_processed,"traindat_study_small.rds"))
 
 
 

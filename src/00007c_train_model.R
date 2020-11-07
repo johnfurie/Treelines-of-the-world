@@ -22,7 +22,7 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 
 
 # load the data
-dat1 <- readRDS(file.path(envrmt$path_002_processed,"traindat_study.rds"))
+dat1 <- readRDS(file.path(envrmt$path_002_processed,"traindat_study_small.rds"))
 plot(dat1)
 head(dat1)
 
@@ -40,16 +40,16 @@ dat$train[dat$train == 0] <- NA
 dat <- dat[complete.cases(dat), ]
 
 dat$train <- as.factor(dat$train)
-write.table(dat, file.path(envrmt$path_002_processed,"traindat_study.csv"))
+write.table(dat, file.path(envrmt$path_002_processed,"traindat_study_small.csv"))
 
-dat <- read.table(file.path(envrmt$path_002_processed,"traindat_study.csv"))
+dat <- read.table(file.path(envrmt$path_002_processed,"traindat_study_small.csv"))
 
 # prepare spatial folds
-index = CAST::CreateSpacetimeFolds(dat,spacevar = "train", k = 3)
+index = CAST::CreateSpacetimeFolds(dat,spacevar = "train", k = 4)
 
 
 # train control for rf model - with LLO-CV based on forest sections
-tC = caret::trainControl(method = "cv", number =  3,  classProbs = TRUE, index = index$index, indexOut = index$indexOut )
+tC = caret::trainControl(method = "cv", number =  4,  classProbs = TRUE, index = index$index, indexOut = index$indexOut )
 
 # training the model note that more than 50k objects are not possible with 16gb ram
 
@@ -66,6 +66,6 @@ rfModel = CAST::ffs(dat[1:6],
 stopCluster(cl)
 
 # save model
-saveRDS(rfModel,file.path(envrmt$path_002_processed, "rf_model_10.rds"))
+saveRDS(rfModel,file.path(envrmt$path_002_processed, "rf_model_small.rds"))
 
 
