@@ -22,8 +22,8 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 # load files 
 ind  <- raster::stack(file.path(envrmt$path_002_processed, "pca_study_map.tif"))
 rgb  <- raster::stack(file.path(envrmt$path_002_processed, "RGB_study_area_clip.tif")) 
-tr <- readOGR(dsn=file.path(envrmt$path_002_processed, "train_new.shp"))
-
+tr <- readOGR(dsn=file.path(envrmt$path_002_processed, "train_10.shp"))
+plot(ind)
 
 seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_dal_ts.shp"))
 head(seg)
@@ -56,15 +56,15 @@ head(segs)
 
 # training shapes spectral
 # rasterize
-gdalUtils::gdal_rasterize(src_datasource = file.path(envrmt$path_002_processed, "train_new.shp"), #input buffer layer polygon
-                          dst_filename = file.path(envrmt$path_002_processed, "train_ras_study.tif"), #output rasterrized
+gdalUtils::gdal_rasterize(src_datasource = file.path(envrmt$path_002_processed, "train_10.shp"), #input buffer layer polygon
+                          dst_filename = file.path(envrmt$path_002_processed, "train_ras_10.tif"), #output rasterrized
                           a ="species",
                           te = c(ext[1],ext[3],ext[2],ext[4]),
                           tr = c(xres(ext_rst),yres(ext_rst)),
                           output_Raster = T)
 
 # load raster
-rast = raster::raster(file.path(envrmt$path_002_processed, "train_ras_study.tif"))
+rast = raster::raster(file.path(envrmt$path_002_processed, "train_ras_10.tif"))
 plot(rast)
 
 #stack raster

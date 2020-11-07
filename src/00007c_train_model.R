@@ -66,6 +66,6 @@ rfModel = CAST::ffs(dat[1:6],
 stopCluster(cl)
 
 # save model
-saveRDS(rfModel,file.path(envrmt$path_002_processed, "rf_model_new.rds"))
+saveRDS(rfModel,file.path(envrmt$path_002_processed, "rf_model_10.rds"))
 
 
