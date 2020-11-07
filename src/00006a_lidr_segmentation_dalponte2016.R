@@ -26,11 +26,13 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 # read lidar data
 LASfile <- file.path(envrmt$path_las, "11225103_HH.las")
 
-tree <- file.path(envrmt$path_las, "tree.las")
-tree_shrub <- file.path(envrmt$path_las, "tree_shrub.las")
-shrub <- file.path(envrmt$path_las, "shrub.las")
+tree <- file.path(envrmt$path_03_Segmentation_sites_las, "tree.las")
+tree_shrub <- file.path(envrmt$path_03_Segmentation_sites_las, "tree_shrub.las")
+shrub <- file.path(envrmt$path_03_Segmentation_sites_las, "shrub.las")
 
 vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_ts.shp"))
+vp_tree_shrub_t   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_ts_t.shp"))
+vp_tree_shrub_s   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_ts_s.shp"))
 vp_tree         <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_t.shp"))
 vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"ft_tpos_s.shp"))
 
@@ -67,12 +69,10 @@ registerDoParallel(cl)
 
 # tree
 
-#treepos
-ttopt <- find_trees(chm_tree, lmf(4, 2))
 
 # segmentation
 last   <- segment_trees(las_t, dalponte2016(chm = chm_tree,
-                                          treetops =ttopt,
+                                          treetops =vp_tree,
                                           th_tree = 2,
                                           th_seed = 0.45,
                                           th_cr = 0.55,
@@ -81,10 +81,6 @@ last   <- segment_trees(las_t, dalponte2016(chm = chm_tree,
 
 #plot
 x = plot(last, color = "treeID", colorPalette = col)
-
-# 3d plot
-x = plot(las_t)
-add_treetops3d(x, ttopt)
 
 #polygon conversion
 poly_t <-tree_hulls(
@@ -108,13 +104,11 @@ seg_t   <-  rgdal::readOGR(file.path(envrmt$path_002_processed,"lidr_seg_dal_t.s
 
 # shrub
 
-#treepos
-ttops <- find_trees(chm_shrub, lmf(4, 2))
 
 # segmentation
 lass   <- segment_trees(las_s, dalponte2016(chm = chm_shrub,
-                                           treetops =ttops,
-                                           th_tree = 2,
+                                           treetops =vp_shrub,
+                                           th_tree = 0.6,
                                            th_seed = 0.45,
                                            th_cr = 0.55,
                                            max_cr = 10000,
@@ -122,10 +116,6 @@ lass   <- segment_trees(las_s, dalponte2016(chm = chm_shrub,
 
 #plot
 x = plot(lass, color = "treeID", colorPalette = col)
-
-# 3d plot
-x = plot(las_s)
-add_treetops3d(x, ttops)
 
 #polygon conversion
 poly_s <-tree_hulls(
@@ -149,13 +139,12 @@ seg_s   <-  rgdal::readOGR(file.path(envrmt$path_002_processed,"lidr_seg_dal_s.s
 
 # tree shrub
 
-#treepos
-ttopts <- find_trees(chm_tree_shrub, lmf(4, 2))
+#both
 
 # segmentation
 lasts   <- segment_trees(las_ts, dalponte2016(chm = chm_tree_shrub,
-                                            treetops =ttopts,
-                                            th_tree = 2,
+                                            treetops =vp_tree_shrub,
+                                            th_tree = 0.6,
                                             th_seed = 0.45,
                                             th_cr = 0.55,
                                             max_cr = 10000,
@@ -163,10 +152,6 @@ lasts   <- segment_trees(las_ts, dalponte2016(chm = chm_tree_shrub,
 
 #plot
 x = plot(lasts, color = "treeID", colorPalette = col)
-
-# 3d plot
-x = plot(las_ts)
-add_treetops3d(x, ttopts)
 
 #polygon conversion
 poly_ts <-tree_hulls(
@@ -184,3 +169,68 @@ plot(poly_ts, add = T)
 #write data
 writeOGR(poly_ts, file.path(envrmt$path_002_processed, "lidr_seg_dal_ts.shp"),layer="testShape",driver="ESRI Shapefile")
 seg_ts   <-  rgdal::readOGR(file.path(envrmt$path_002_processed,"lidr_seg_dal_ts.shp"))
+
+
+
+#tree
+# segmentation
+lasts_t   <- segment_trees(las_ts, dalponte2016(chm = chm_tree_shrub,
+                                              treetops =vp_tree_shrub_t,
+                                              th_tree = 2,
+                                              th_seed = 0.45,
+                                              th_cr = 0.55,
+                                              max_cr = 10000,
+                                              ID = "treeID"))
+
+#plot
+x = plot(lasts, color = "treeID", colorPalette = col)
+
+#polygon conversion
+poly_ts_t <-tree_hulls(
+  lasts_t,
+  type = c("convex", "concave", "bbox"),
+  concavity = 3,
+  length_threshold = 0,
+  func = NULL,
+  attribute = "treeID")
+
+#plot
+plotRGB(rgb_tree_shrub)
+plot(poly_ts_t, add = T)
+
+#write data
+writeOGR(poly_ts_t, file.path(envrmt$path_002_processed, "lidr_seg_dal_ts_t.shp"),layer="testShape",driver="ESRI Shapefile")
+seg_ts_t   <-  rgdal::readOGR(file.path(envrmt$path_002_processed,"lidr_seg_dal_ts_t.shp"))
+
+
+
+
+#shrub
+# segmentation
+lasts_s   <- segment_trees(las_ts, dalponte2016(chm = chm_tree_shrub,
+                                              treetops =vp_tree_shrub_s,
+                                              th_tree = 0.6,
+                                              th_seed = 0.45,
+                                              th_cr = 0.55,
+                                              max_cr = 10000,
+                                              ID = "treeID"))
+
+#plot
+x = plot(lasts_s, color = "treeID", colorPalette = col)
+
+#polygon conversion
+poly_ts_s <-tree_hulls(
+  lasts_s,
+  type = c("convex", "concave", "bbox"),
+  concavity = 3,
+  length_threshold = 0,
+  func = NULL,
+  attribute = "treeID")
+
+#plot
+plotRGB(rgb_tree_shrub)
+plot(poly_ts_s, add = T)
+
+#write data
+writeOGR(poly_ts_s, file.path(envrmt$path_002_processed, "lidr_seg_dal_ts_s.shp"),layer="testShape",driver="ESRI Shapefile")
+seg_ts_s   <-  rgdal::readOGR(file.path(envrmt$path_002_processed,"lidr_seg_dal_ts_s.shp"))

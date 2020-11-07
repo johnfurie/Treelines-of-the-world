@@ -41,10 +41,10 @@ rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_e2_map.tif"))
 rgb  <- raster::stack(file.path(envrmt$path_02_Ecotone_sites_RGB, "RGB_e2.tif"))
 
 rs <- stack(rs,rgb)
-rs <- stack(rs,chm)
-head(rs)
-names(rs) <- (c("pca1","pca2","pca3","red","green","blue","height"))
 
+
+names(rs) <- (c("pca1","pca2","pca3","red","green","blue"))
+head(rs)
 
 cl =  makeCluster(detectCores()-1) #open cluster
 registerDoParallel(cl)

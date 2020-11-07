@@ -72,7 +72,6 @@ train <- stack(segs,rast)
 
 
 train <- stack(ind,rgb)
-#crop to shp extent
 
 train <- stack(train,rast)
 
