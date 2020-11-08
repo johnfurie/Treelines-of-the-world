@@ -20,7 +20,7 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 
 #load indices
-ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_all_na.tif"))
+ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_study_all.tif"))
 ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_n_e2.tif"))
 ind = raster::stack(file.path(envrmt$path_002_processed, "veg_ind_n_e3.tif"))
 head(ind)
@@ -68,4 +68,4 @@ a <- stack(pca$map$PC1,pca$map$PC2,pca$map$PC3)
 writeRaster(a, filename = file.path(envrmt$path_002_processed, "pca_study_all_map.tif"), overwrite=TRUE)
 
 #save PCA file
-saveRDS(a,file = file.path(envrmt$path_002_processed,"pca_e3n_map.rds"))
+saveRDS(a,file = file.path(envrmt$path_002_processed,"pca_study_all_map.rds"))

@@ -63,8 +63,8 @@ rgb <- crop(rgb_tree_shrub, extent(tr))
 ir <- crop(ir_tree_shrub, extent(tr))
 chm <- crop(chm_tree_shrub, extent(tr))
 
-#writeRaster(rgb, file.path(envrmt$path_002_processed,"RGB_train.tif"),format="GTiff",overwrite=TRUE)
-
+writeRaster(rgb, file.path(envrmt$path_002_processed,"RGB_study_all.tif"),format="GTiff",overwrite=TRUE)
+plot(rgb$Red)
 
 
 

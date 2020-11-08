@@ -20,7 +20,7 @@ source(file.path(root_folder, paste0(pathdir,"01b_environment_setup_with_SAGA.R"
 #############################################################################################
 
 # load the data
-rfModel <- readRDS(file.path(envrmt$path_002_processed, "rf_model.rds"))
+rfModel <- readRDS(file.path(envrmt$path_002_processed, "rf_model_small.rds"))
 head(rfModel)
 ### evaluate the model
 
@@ -37,9 +37,9 @@ cfmatrix <- caret::confusionMatrix(pred, dat$FE_DWBAGRP)
 print(cfmatrix)
 
 ### predict tree species 
-rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_e2_map.tif"))
-rgb  <- raster::stack(file.path(envrmt$path_02_Ecotone_sites_RGB, "RGB_e2.tif"))
-
+rs  <- raster::stack(file.path(envrmt$path_002_processed, "pca_study_all_map.tif"))
+rgb  <- raster::stack(file.path(envrmt$path_002_processed, "RGB_study_all.tif"))
+plot(rs$pca1)
 rs <- stack(rs,rgb)
 
 
@@ -52,7 +52,7 @@ registerDoParallel(cl)
 specter <- raster::predict(rs, rfModel)
 stopCluster(cl) #close cluster
 
-writeRaster(specter, file.path(envrmt$path_002_processed,"rf_prediction_e2.tif"), overwrite=T)
+writeRaster(specter, file.path(envrmt$path_002_processed,"rf_prediction_small.tif"), overwrite=T)
 
 plot(specter)
 plot(seg, add=T)

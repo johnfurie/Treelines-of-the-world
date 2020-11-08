@@ -54,8 +54,16 @@ specter  <- raster::raster(file.path(envrmt$path_002_processed,"rf_prediction_sm
 
 specter  <- raster::raster(file.path(envrmt$path_002_processed, "CHM_study_area_clean.tif"))
 
+seg$X_mean <- as.integer(seg$X_mean)
+head(seg)
+plot(seg)
+
+# write VECTOR
+writeOGR(seg, file.path(envrmt$path_002_processed, "lidr_seg_sil_ts_s.shp"),layer="testShape",driver="ESRI Shapefile")
+
+
 #make dataframe with treeID
-b <- seg$treeID
+b <- seg$
 head(b)
 b <- as.data.frame(b)
 head(b)
@@ -64,12 +72,12 @@ names(b) <- (c("treeID"))
 
 # extract values of predicted raster and assign to segmentation polygons
 a <- extract(specter, seg, fun=mean, na.rm=TRUE)
-head(a)
+head(seg)
 a <- as.data.frame(a)
 #rownames
 names(a) <- (c("value"))
 #rounding numbers
-a <- a %>% mutate_at(vars(starts_with("value")), funs(round(a$value, 0)))
+seg$X_mean <- seg$X_mean %>% mutate_at(vars(starts_with("X_mean")), funs(round(seg$X_mean, 0)))
 head(a)
 #combine 2 dataframes
 c <- cbind(a,b)
