@@ -50,6 +50,18 @@ seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_sil_ts.shp"))
 seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_sil_ts_t.shp"))
 seg <- readOGR(dsn=file.path(envrmt$path_002_processed, "lidr_seg_sil_ts_s.shp"))
 
+
+rgb_t  <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB, "RGB_tree.tif"))
+rgb_s  <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB, "RGB_shrub.tif"))
+rgb_ts  <- raster::stack(file.path(envrmt$path_03_Segmentation_sites_RGB, "RGB_tree_shrub.tif"))
+
+vp_t <- readOGR(dsn=file.path(envrmt$path_03_Segmentation_sites_shp, "ft_tpos_t.shp"))
+vp_s <- readOGR(dsn=file.path(envrmt$path_03_Segmentation_sites_shp, "ft_tpos_s.shp"))
+vp_ts <- readOGR(dsn=file.path(envrmt$path_03_Segmentation_sites_shp, "ft_tpos_ts.shp"))
+vp_ts_t <- readOGR(dsn=file.path(envrmt$path_03_Segmentation_sites_shp, "ft_tpos_ts_t.shp"))
+vp_ts_s <- readOGR(dsn=file.path(envrmt$path_03_Segmentation_sites_shp, "ft_tpos_ts_s.shp"))
+
+
 specter  <- raster::raster(file.path(envrmt$path_002_processed,"rf_prediction_small5.tif"))
 
 specter  <- raster::raster(file.path(envrmt$path_002_processed, "CHM_study_area_clean.tif"))
