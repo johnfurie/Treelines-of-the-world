@@ -99,6 +99,7 @@ rlts <- chmseg_RL(chm = chm_tree_shrub,
                     exclusion = 0.4)
 
 
+
 # plot with maptools
 plot(chm_tree_shrub)
 plot(vp_tree_shrub, bty="l", col="red", pch=19, add = TRUE)

@@ -74,10 +74,10 @@ registerDoParallel(cl)
 last   <- segment_trees(las_t, li2012(
                                       dt1 = 1.5, 
                                       dt2 = 2, 
-                                      R = 2, 
+                                      R = 1, 
                                       Zu = 15, 
-                                      hmin = 2, 
-                                      speed_up = 10000))
+                                      hmin = 5, 
+                                      speed_up = 100))
 
 #plot
 x = plot(last, color = "treeID", colorPalette = col)
@@ -94,7 +94,7 @@ poly_t <-tree_hulls(
 
 #plot
 plotRGB(rgb_tree)
-plot(poly_t, add = T)
+plot(poly_t ,add = T, border = "red", lwd =3)
 plot(vp_tree, add = T)
 
 #write data
@@ -108,15 +108,15 @@ seg_t   <-  rgdal::readOGR(file.path(envrmt$path_002_processed,"lidr_seg_li_t.sh
 
 # segmentation
 lass   <- segment_trees(las_s, li2012(
-                                      dt1 = 1.5, 
+                                      dt1 = 1, 
                                       dt2 = 2, 
-                                        R = 2, 
-                                        Zu = 15, 
-                                      hmin = 0.6, 
+                                        R = 1, 
+                                        Zu = 5, 
+                                      hmin = 0.2, 
                                   speed_up = 10))
 
 #plot
-x = plot(lass, color = "treeID", colorPalette = col)
+#x = plot(lass, color = "treeID", colorPalette = col)
 
 
 #polygon conversion
@@ -129,9 +129,9 @@ poly_s <-tree_hulls(
   attribute = "treeID")
 
 #plot
-plotRGB(rgb_shrub)
-plot(poly_s, add = T)
-plot(vp_tree_shrub, add = T)
+#plotRGB(rgb_shrub)
+#plot(poly_s, add = T)
+#plot(vp_tree_shrub, add = T)
 
 #write data
 writeOGR(poly_s, file.path(envrmt$path_002_processed, "lidr_seg_li_s.shp"),layer="testShape",driver="ESRI Shapefile")

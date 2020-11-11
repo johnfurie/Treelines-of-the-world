@@ -34,17 +34,19 @@ vp_tree_shrub   <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_s
 vp_tree         <-  rgdal::readOGR("C:/Users/Niklas/Documents/GitHub/Treelines-of-the-world/repo/treeposition_pointshapes/ft_tpos_tv2.shp")
 vp_shrub        <-  rgdal::readOGR(file.path(envrmt$path_03_Segmentation_sites_shp,"tpos_shrub.shp"))
 
+vp_tree_shrub_s <- rgdal::readOGR("C:/Users/Niklas/Documents/GitHub/Treelines-of-the-world/repo/data_exchange/tree_positions_final/vector/ft_tpos_ts_s.shp")
 
 
 # compare coordinate system of datasets
-compareCRS(chm_tree,vp_tree)
-chm_tree@crs@projargs <- "+proj=tmerc +lat_0=0 +lon_0=10.3333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +units=m +no_defs"
+compareCRS(chm_tree_shrub,vp_tree_shrub)
+chm_tree_shrub@crs@projargs <- "+proj=tmerc +lat_0=0 +lon_0=10.3333333333333 +k=1 +x_0=0 +y_0=-5000000 +ellps=bessel +units=m +no_defs"
 #run cluster
 
 cl =  makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
-
+n <- readOGR("C:/Users/Niklas/Documents/GitHub/Treelines-of-the-world/repo/data_exchange/tree_positions_final/vector/ft_tpos_ts.shp")
+plot(n)
 # CENITH validation V2.1 different moving window sizes computed and search for max hitrate to use settings for segmentation
 # tree
 valt <- BestSegVal(chm = chm_tree, 
@@ -68,11 +70,11 @@ vals <- BestSegVal(chm = chm_shrub,
                   filter = 3
                   )
 
-valts <- BestSegVal(chm = chm_tree_shrub, 
+valts_s <- BestSegVal(chm = chm_tree_shrub, 
                   a = seq(0.1,0.9,0.1), 
                   b = seq(0.1,0.9,0.1),
-                  h = seq(0.2,4,0.2),
-                  vp = vp_tree_shrub,
+                  h = seq(0.2,5,0.2),
+                  vp = vp_tree_shrub_s,
                   MIN = 10,
                   MAX = 500000,
                   filter = 3

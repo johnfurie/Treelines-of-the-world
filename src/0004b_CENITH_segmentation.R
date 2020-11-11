@@ -43,8 +43,8 @@ registerDoParallel(cl)
 # CENITH segmentation (use best hitrate settings from bestsegval)
 # tree
 segt <- TreeSeg(chm=chm_tree, 
-               a=c(0.21), 
-               b=c(0.9),
+               a=c(0.1), 
+               b=c(0.5),
                h=c(2),
                MIN=10,
                MAX=50000,
@@ -62,25 +62,46 @@ segs <- TreeSeg(chm=chm_shrub,
 )
 
 # tree shrub
+
 segts <- TreeSeg(chm=chm_tree_shrub, 
-               a=c(0.3), 
-               b=c(0.1),
-               h=c(0.2),
+                   a=c(0.1), 
+                   b=c(0.9),
+                   h=c(0.2),
+                   MIN=10,
+                   MAX=50000,
+                   CHMfilter=3
+)
+
+segts_t <- TreeSeg(chm=chm_tree_shrub, 
+               a=c(0.2), 
+               b=c(0.9),
+               h=c(2),
                MIN=10,
                MAX=50000,
                CHMfilter=3
 )
+
+segts_s <- TreeSeg(chm=chm_tree_shrub, 
+                   a=c(0.6), 
+                   b=c(0.7),
+                   h=c(0.2),
+                   MIN=10,
+                   MAX=50000,
+                   CHMfilter=3
+)
+
+sd <- readOGR(sil_ts_s)
 # visualization
-mapview::mapview(segt)+vp_tree+chm_tree
+mapview::mapview(segts)+vp_tree+chm_tree
 mapview::mapview(segs)+vp_shrub+chm_shrub
-mapview::mapview(segts)+vp_tree_shrub+chm_tree_shrub
+mapview::mapview(segts_s)+vp_tree_shrub+chm_tree_shrub
 
 # write data
 writeOGR(segt, file.path(envrmt$path_002_processed, "cenith_seg_t.shp"),layer="testShape",driver="ESRI Shapefile")
 writeOGR(segs, file.path(envrmt$path_002_processed, "cenith_seg_s.shp"),layer="testShape",driver="ESRI Shapefile")
-writeOGR(segts, file.path(envrmt$path_002_processed, "cenith_seg_ts.shp"),layer="testShape",driver="ESRI Shapefile")
+writeOGR(segts_s, file.path(envrmt$path_002_processed, "cenith_seg_ts_s.shp"),layer="testShape",driver="ESRI Shapefile")
 
 # load segments
 tree <-  rgdal::readOGR(file.path(envrmt$path_002_processed, "cenith_seg_t.shp"))
 shrub <-  rgdal::readOGR(file.path(envrmt$path_002_processed, "cenith_seg_s.shp"))
-tree_shrub <-  rgdal::readOGR(file.path(envrmt$path_002_processed, "cenith_seg_ts.shp"))
+tree_shrub <-  rgdal::readOGR(file.path(envrmt$path_002_processed, "cenith_seg_ts_s.shp"))
